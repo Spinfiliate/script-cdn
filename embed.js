@@ -1,17 +1,17 @@
 (function () {
     var t = window;
 
-    // Check if spin is already defined
-    if (typeof t.spin === "function") return;
+    // Check if Spin is already defined
+    if (typeof t.Spin === "function") return;
 
-    // Create a stub function for spin
-    var spin = function () {
-        spin.q = spin.q || [];
-        spin.q.push(arguments);
+    // Create a stub function for Spin
+    var Spin = function () {
+        Spin.q = Spin.q || [];
+        Spin.q.push(arguments);
     };
 
-    // Assign the stub function to window.spin
-    t.spin = spin;
+    // Assign the stub function to window.Spin
+    t.Spin = Spin;
 
     // Load the actual script
     var loadScript = function () {

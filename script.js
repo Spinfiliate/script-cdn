@@ -108,10 +108,10 @@
                     } catch (error) {
                         callback && callback(error, null);
                     }
-                    return;
+                } else {
+                    callback && callback("Referral code not found", null);
                 }
             }
-            callback && callback(null, null);
         });
     }
 
@@ -181,10 +181,31 @@
 
     // Process any queued commands
     if (window.Spin.q && window.Spin.q.length > 0) {
-        window.Spin.q.forEach(function(args) {
-            window.spin.apply(null, args);
+        // First, find and execute the "create" method, if it exists
+        const createIndex = window.Spin.q.findIndex(function (args) {
+            return args[0] === "create";
         });
-        window.Spin.q = [];  // Clear the queue after processing
-    }
 
+        if (createIndex !== -1) {
+            const createArgs = window.Spin.q.splice(createIndex, 1)[0];
+            const methodArgs = Array.prototype.slice.call(createArgs, 1);
+
+            if (typeof window.spin.create === "function") {
+                window.spin.create.apply(null, methodArgs);
+            }
+        }
+
+        // Process the remaining queued commands in the order they were queued
+        window.Spin.q.forEach(function (args) {
+            const method = args[0];
+            const methodArgs = Array.prototype.slice.call(args, 1);
+
+            if (method !== "create" && typeof window.spin[method] === "function") {
+                window.spin[method].apply(null, methodArgs);
+            }
+        });
+
+        // Clear the queue after processing
+        window.Spin.q = [];
+    }
 })();

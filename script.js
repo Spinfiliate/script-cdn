@@ -17,7 +17,24 @@
     function setCookie(name, value, days = 365, path = '/') {
         const expires = new Date();
         expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-        document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=${path}`;
+
+        // Get the current hostname
+        const hostname = window.location.hostname;
+
+        // Determine if we're on the main domain or a subdomain
+        const domainParts = hostname.split('.');
+        let domainAttribute = '';
+
+        if (domainParts.length > 2) {
+            // It's a subdomain, do not set the domain attribute
+            domainAttribute = '';
+        } else {
+            // It's the main domain, set the domain attribute
+            domainAttribute = `; domain=.${domainParts.slice(-2).join('.')}`;
+        }
+
+        // Set the cookie
+        document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=${path}${domainAttribute}`;
     }
 
     function getQueryParam(param) {

@@ -1,4 +1,5 @@
 (function () {
+    // Real implementation of Spin methods
     var accountId;
     var visitorId;
     var cookieName = "sf_vid";
@@ -170,12 +171,20 @@
         });
     }
 
-    // Export methods for external use
+    // Replace the stub function with the real Spin implementation
     window.spin = {
         create,
         detect,
         customer,
         conversion
     };
+
+    // Process any queued commands
+    if (window.Spin.q && window.Spin.q.length > 0) {
+        window.Spin.q.forEach(function(args) {
+            window.spin.apply(null, args);
+        });
+        window.Spin.q = [];  // Clear the queue after processing
+    }
 
 })();
